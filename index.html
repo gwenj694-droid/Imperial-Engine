@@ -6,20 +6,18 @@
   <title>SIG7 | IMPERIAL ARCHITECT</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
-  <!-- Load Markdown Library -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
-  <!-- THE GATE (Black Void) -->
+  <!-- THE GATE -->
   <div id="gate-overlay" class="gate-overlay">
     <input type="password" id="gate-input" class="gate-input" placeholder="ENTER CODE" autofocus>
   </div>
 
-  <!-- THE APP (Hidden) -->
+  <!-- THE APP -->
   <div id="app-container" class="app-container">
     
-    <!-- Header -->
     <div class="header-row">
       <div>
         <h1>SIG 7</h1>
@@ -28,19 +26,24 @@
       <div class="system-status">● SYSTEM ACTIVE</div>
     </div>
 
-    <!-- Input -->
+    <!-- NEW: API KEY INPUT (The "Neural Link") -->
+    <div style="margin-top: 2rem; border-bottom: 1px solid #333; padding-bottom: 1rem;">
+      <p class="label" style="font-size: 0.7rem;">NEURAL LINK (API KEY):</p>
+      <input type="password" id="api-key-input" 
+             style="background: transparent; border: 1px solid #444; color: #d8b4fe; padding: 10px; width: 100%; font-family: 'Montserrat'; outline: none;" 
+             placeholder="PASTE SK-KEY HERE...">
+    </div>
+
     <div class="input-section">
       <p class="label">INITIATE COMMAND:</p>
       <textarea id="user-input" placeholder="Describe the Sovereign Offer..."></textarea>
       <button id="action-btn" class="action-btn">EXECUTE</button>
     </div>
 
-    <!-- Output -->
     <div id="output-box" class="output-box"></div>
 
   </div>
 
-  <!-- THE BRAIN -->
   <script type="module" src="index.js"></script>
 
 </body>
