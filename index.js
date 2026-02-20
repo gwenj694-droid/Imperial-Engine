@@ -1,11 +1,12 @@
 // --- CONFIGURATION ---
-const API_KEY = "               "; // <--- PASTE YOUR OPENAI KEY HERE
+// NO API KEY HERE - WE GET IT FROM THE SCREEN
 const GATE_CODE = "IMPERIAL";
 
 // --- DOM ELEMENTS ---
 const gateOverlay = document.getElementById('gate-overlay');
 const gateInput = document.getElementById('gate-input');
 const appContainer = document.getElementById('app-container');
+const apiKeyInput = document.getElementById('api-key-input'); // <--- NEW
 const userInput = document.getElementById('user-input');
 const actionBtn = document.getElementById('action-btn');
 const outputBox = document.getElementById('output-box');
@@ -17,7 +18,7 @@ gateInput.addEventListener('keydown', (e) => {
       gateOverlay.style.opacity = '0';
       setTimeout(() => {
         gateOverlay.style.display = 'none';
-        appContainer.style.display = 'block'; // Make visible
+        appContainer.style.display = 'block';
         appContainer.classList.add('app-visible');
       }, 1000);
     } else {
@@ -28,10 +29,13 @@ gateInput.addEventListener('keydown', (e) => {
   }
 });
 
-// --- 2. THE IMPERIAL ARCHITECT (OpenAI Logic) ---
+// --- 2. THE IMPERIAL ARCHITECT ---
 actionBtn.addEventListener('click', async () => {
   const text = userInput.value;
-  if (!text) return;
+  const apiKey = apiKeyInput.value.trim(); // <--- GRAB KEY FROM INPUT BOX
+
+  if (!text) { alert("ENTER COMMAND"); return; }
+  if (!apiKey) { alert("ENTER NEURAL LINK KEY"); return; }
 
   // Visual Loading State
   actionBtn.innerText = "ARCHITECTING...";
@@ -55,10 +59,10 @@ actionBtn.addEventListener('click', async () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${API_KEY}`
+        "Authorization": `Bearer ${apiKey}` // <--- USE THE KEY FROM SCREEN
       },
       body: JSON.stringify({
-        model: "gpt-4o", // Or gpt-3.5-turbo
+        model: "gpt-4o", 
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: text }
@@ -75,8 +79,6 @@ actionBtn.addEventListener('click', async () => {
 
     const rawText = data.choices[0].message.content;
     
-    // Convert Markdown to HTML (marked library must be in index.html)
-    // If marked isn't loading, just show raw text
     if (typeof marked !== 'undefined') {
       outputBox.innerHTML = marked.parse(rawText);
     } else {
