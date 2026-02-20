@@ -4,25 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIG7 | IMPERIAL ARCHITECT</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
+  <!-- Load Markdown Library -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="importmap">
-  {
-    "imports": {
-      "@google/generative-ai": "https://esm.sh/@google/generative-ai",
-      "marked": "https://esm.sh/marked@11.1.1",
-      "react": "https://esm.sh/react@18.2.0",
-      "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
-      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-      "lucide-react": "https://esm.sh/lucide-react@0.330.0"
-    }
-  }
-  </script>
+
+  <!-- THE GATE (Black Void) -->
+  <div id="gate-overlay" class="gate-overlay">
+    <input type="password" id="gate-input" class="gate-input" placeholder="ENTER CODE" autofocus>
+  </div>
+
+  <!-- THE APP (Hidden) -->
+  <div id="app-container" class="app-container">
+    
+    <!-- Header -->
+    <div class="header-row">
+      <div>
+        <h1>SIG 7</h1>
+        <p class="subtitle">IMPERIAL INTELLIGENCE</p>
+      </div>
+      <div class="system-status">● SYSTEM ACTIVE</div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-section">
+      <p class="label">INITIATE COMMAND:</p>
+      <textarea id="user-input" placeholder="Describe the Sovereign Offer..."></textarea>
+      <button id="action-btn" class="action-btn">EXECUTE</button>
+    </div>
+
+    <!-- Output -->
+    <div id="output-box" class="output-box"></div>
+
+  </div>
+
+  <!-- THE BRAIN -->
   <script type="module" src="index.js"></script>
+
 </body>
 </html>
