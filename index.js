@@ -1,7 +1,5 @@
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-
 // --- CONFIGURATION ---
-const API_KEY = "AIzaSyAluqkC8k5cA6rSchT7UnhcWkZe6KrwGo0";  // <--- PASTE KEY HERE
+const API_KEY = "               "; // <--- PASTE YOUR OPENAI KEY HERE
 const GATE_CODE = "IMPERIAL";
 
 // --- DOM ELEMENTS ---
@@ -16,14 +14,13 @@ const outputBox = document.getElementById('output-box');
 gateInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     if (gateInput.value === GATE_CODE) {
-      // Success: Unlock
-      gateOverlay.classList.add('gate-hidden');
+      gateOverlay.style.opacity = '0';
       setTimeout(() => {
         gateOverlay.style.display = 'none';
+        appContainer.style.display = 'block'; // Make visible
         appContainer.classList.add('app-visible');
       }, 1000);
     } else {
-      // Fail: Shake
       gateInput.classList.add('shake');
       setTimeout(() => gateInput.classList.remove('shake'), 400);
       gateInput.value = "";
@@ -31,45 +28,67 @@ gateInput.addEventListener('keydown', (e) => {
   }
 });
 
-// --- 2. THE ARCHITECT (AI Logic) ---
+// --- 2. THE IMPERIAL ARCHITECT (OpenAI Logic) ---
 actionBtn.addEventListener('click', async () => {
   const text = userInput.value;
   if (!text) return;
 
   // Visual Loading State
-  actionBtn.textContent = "ARCHITECTING...";
+  actionBtn.innerText = "ARCHITECTING...";
   actionBtn.disabled = true;
   outputBox.innerHTML = "";
 
+  const systemPrompt = `
+    You are SIG7, an Imperial Business Architect.
+    Analyze this offer: "${text}"
+    
+    Create a Sovereign Asset Stack (Markdown format):
+    1. 3 LinkedIn Posts (Hook, Value, CTA).
+    2. A 3-Part Email Sequence (Authority, Vision, Invitation).
+    3. A Visual Brief (Luxurious, Minimalist, Gold/Black/Lilac aesthetic).
+    
+    Tone: Imperial, Decisive, High-Status, Warm.
+  `;
+
   try {
-    const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o", // Or gpt-3.5-turbo
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: text }
+        ],
+        temperature: 0.7
+      })
+    });
 
-    const prompt = `
-      You are SIG7, an Imperial Business Architect.
-      Analyze this offer: "${text}"
-      
-      Create a Sovereign Asset Stack (Markdown format):
-      1. 3 LinkedIn Posts (Hook, Value, CTA).
-      2. A 3-Part Email Sequence (Authority, Vision, Invitation).
-      3. A Visual Brief (Luxurious, Minimalist, Gold/Black/Lilac aesthetic).
-      
-      Tone: Imperial, Decisive, High-Status, Warm.
-    `;
+    const data = await response.json();
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const rawText = response.text();
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
 
-    // Convert Markdown to HTML using the 'marked' library
-    outputBox.innerHTML = marked.parse(rawText);
+    const rawText = data.choices[0].message.content;
+    
+    // Convert Markdown to HTML (marked library must be in index.html)
+    // If marked isn't loading, just show raw text
+    if (typeof marked !== 'undefined') {
+      outputBox.innerHTML = marked.parse(rawText);
+    } else {
+      outputBox.innerText = rawText;
+    }
 
   } catch (error) {
     console.error(error);
-    outputBox.innerHTML = "<p style='color:red'>CONNECTION FAILED. CHECK API KEY.</p>";
+    outputBox.innerHTML = `<p style='color:red; border:1px solid red; padding:10px;'>ERROR: ${error.message}</p>`;
   }
 
   // Reset Button
-  actionBtn.textContent = "EXECUTE";
+  actionBtn.innerText = "EXECUTE";
   actionBtn.disabled = false;
 });
